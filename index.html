@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shanmukh Gorle - Week 3</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <style>
+        body {
+            margin: 20px;
+        }
+        .width-100 {
+            width: 100px;
+        }
+        .width-350 {
+            width: 350px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="col">
+            <br>
+            <div class="row">
+                <label for="title" class="width-100">Title:</label>
+                <input type="text" class="width-350" name="title" id="title">
+            </div><br>
+            <div class="row">
+                <label for="author" class="width-100">Author:</label>
+                <input type="text" class="width-350" name="author" id="author">
+            </div><br>
+            <div class="row">
+                <button type="button" class="btn btn-success" onclick="sendPost()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col xs-12" id="list"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js"
+        integrity="sha512-aoTNnqZcT8B4AmeCFmiSnDlc4Nj/KPaZyB5G7JnOnUEkdNpCZs1LCankiYi01sLTyWy+m2P+W4XM+BuQ3Q4/Dg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function getPost() {
+            axios.get('http://localhost:3004/posts')
+                .then(function (response) {
+                    const list = document.getElementById('list');
+                    if (response && response.data) {
+                        list.innerHTML = '';
+                        response.data.forEach(post => {
+                            list.innerHTML += '<br>' + post.title + ' : ' + post.author;
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+        getPost();
+        function sendPost() {
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const req = {
+                title,
+                author
+            };
+            axios.post('http://localhost:3004/posts', req)
+                .then(function (response) {
+                    console.log(response);
+                    document.getElementById('title').value = '';
+                    document.getElementById('title').focus();
+                    document.getElementById('author').value = '';
+                    getPost();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    </script>
+</body>
+
+</html>
